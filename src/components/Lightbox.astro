@@ -1,0 +1,245 @@
+---
+// Click-to-preview lightbox for article images.
+// Markup lives here so Astro's scoped styles apply; the script only toggles state.
+---
+
+<div class="lightbox" data-lightbox hidden>
+  <div class="lb-bar">
+    <button type="button" data-act="out" aria-label="Zoom out">−</button>
+    <button type="button" data-act="reset" aria-label="Reset zoom">100%</button>
+    <button type="button" data-act="in" aria-label="Zoom in">+</button>
+    <button type="button" data-act="close" aria-label="Close preview">✕</button>
+  </div>
+  <img class="lb-img" alt="" />
+  <p class="lb-hint">Scroll or ± to zoom · drag to pan · Esc to close</p>
+</div>
+
+<style>
+  :global(.prose figure img),
+  :global(.prose > p > img) {
+    cursor: zoom-in;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    background: rgba(8, 8, 8, 0.94);
+    backdrop-filter: blur(6px);
+    cursor: zoom-out;
+  }
+
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lb-img {
+    max-width: 94vw;
+    max-height: 86vh;
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-drag: none;
+    transform-origin: center center;
+    box-shadow: 0 30px 80px -40px rgba(0, 0, 0, 0.9);
+    background: #ffffff;
+  }
+
+  .lb-img.is-dragging {
+    cursor: grabbing;
+  }
+
+  .lb-bar {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    display: flex;
+    gap: 6px;
+    padding: 6px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .lb-bar button {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f2f2f2;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .lb-bar button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .lb-hint {
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    font-size: 11.5px;
+    letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.7);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  @media (max-width: 640px) {
+    .lb-hint {
+      display: none;
+    }
+
+    .lb-bar {
+      top: 10px;
+      right: 10px;
+    }
+  }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-lightbox]');
+
+  if (box) {
+    const root: HTMLElement = box;
+    const img = root.querySelector<HTMLImageElement>('.lb-img')!;
+    const label = root.querySelector<HTMLButtonElement>('[data-act="reset"]')!;
+
+    const MIN = 0.5;
+    const MAX = 8;
+    const STEP = 1.5;
+
+    let scale = 1;
+    let tx = 0;
+    let ty = 0;
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let opener: HTMLElement | null = null;
+
+    const clamp = (v: number) => Math.min(MAX, Math.max(MIN, v));
+
+    function render() {
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      label.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    function zoomTo(next: number, clientX?: number, clientY?: number) {
+      const target = clamp(next);
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      const px = (clientX ?? cx) - cx;
+      const py = (clientY ?? cy) - cy;
+      const k = target / scale;
+      tx = px - (px - tx) * k;
+      ty = py - (py - ty) * k;
+      scale = target;
+      render();
+    }
+
+    function reset() {
+      scale = 1;
+      tx = 0;
+      ty = 0;
+      render();
+    }
+
+    function open(source: HTMLImageElement) {
+      opener = source;
+      img.src = source.currentSrc || source.src;
+      img.alt = source.alt;
+      reset();
+      root.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      root.querySelector<HTMLButtonElement>('[data-act="close"]')!.focus();
+    }
+
+    function close() {
+      root.hidden = true;
+      img.removeAttribute('src');
+      document.documentElement.style.overflow = '';
+      opener?.focus();
+    }
+
+    document.querySelectorAll<HTMLImageElement>('.prose img').forEach((el) => {
+      el.addEventListener('click', () => open(el));
+    });
+
+    root.addEventListener('click', (event) => {
+      const target = event.target as HTMLElement;
+      const act = target.closest<HTMLButtonElement>('[data-act]')?.dataset.act;
+
+      if (act === 'in') zoomTo(scale * STEP);
+      else if (act === 'out') zoomTo(scale / STEP);
+      else if (act === 'reset') reset();
+      else if (act === 'close' || target === root) close();
+    });
+
+    img.addEventListener('wheel', (event) => {
+      event.preventDefault();
+      const factor = event.deltaY < 0 ? 1.15 : 1 / 1.15;
+      zoomTo(scale * factor, event.clientX, event.clientY);
+    }, { passive: false });
+
+    img.addEventListener('dblclick', (event) => {
+      event.preventDefault();
+      if (scale > 1.05) reset();
+      else zoomTo(2.5, event.clientX, event.clientY);
+    });
+
+    img.addEventListener('pointerdown', (event) => {
+      if (event.button !== 0) return;
+      dragging = true;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      img.classList.add('is-dragging');
+      img.setPointerCapture(event.pointerId);
+    });
+
+    img.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      tx += event.clientX - lastX;
+      ty += event.clientY - lastY;
+      lastX = event.clientX;
+      lastY = event.clientY;
+      render();
+    });
+
+    function endDrag(event: PointerEvent) {
+      if (!dragging) return;
+      dragging = false;
+      img.classList.remove('is-dragging');
+      if (img.hasPointerCapture(event.pointerId)) img.releasePointerCapture(event.pointerId);
+    }
+
+    img.addEventListener('pointerup', endDrag);
+    img.addEventListener('pointercancel', endDrag);
+
+    window.addEventListener('keydown', (event) => {
+      if (root.hidden) return;
+
+      if (event.key === 'Escape') close();
+      else if (event.key === '+' || event.key === '=') zoomTo(scale * STEP);
+      else if (event.key === '-' || event.key === '_') zoomTo(scale / STEP);
+      else if (event.key === '0') reset();
+    });
+  }
+</script>

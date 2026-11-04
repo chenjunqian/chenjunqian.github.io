@@ -12,6 +12,8 @@ const posts = defineCollection({
     tag: z.string().default('Notes'),
     cover: z.string(),
     coverAlt: z.string().default(''),
+    coverWidth: z.number().default(1600),
+    coverHeight: z.number().default(900),
     featured: z.boolean().default(false),
     draft: z.boolean().default(false),
   }),

@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { projects, socials } from '../../data/projects';
+import { projects } from '../../data/projects';
 
 const intro = 'Four products, kept alive in the gaps between a full-time job. Each one started as a personal annoyance, then grew into something other people use.';
 ---
@@ -51,35 +51,5 @@ const intro = 'Four products, kept alive in the gaps between a full-time job. Ea
         </section>
       ))}
     </div>
-
-    <section class="section">
-      <div class="section-head">
-        <div>
-          <span class="label">Elsewhere</span>
-          <h2>Smaller experiments</h2>
-          <p>Dots, tools and half-finished repos that did not deserve a section of their own.</p>
-        </div>
-      </div>
-      <div class="project-list">
-        <a class="project-row" href="https://github.com/chenjunqian/dotfiles" target="_blank" rel="noopener noreferrer">
-          <span class="index">01</span>
-          <span class="name">dotfiles</span>
-          <span class="desc">Shell, Neovim and terminal setup, tuned on NixOS</span>
-          <span class="go">↗</span>
-        </a>
-        <a class="project-row" href="https://github.com/chenjunqian/go-markitdown" target="_blank" rel="noopener noreferrer">
-          <span class="index">02</span>
-          <span class="name">go-markitdown</span>
-          <span class="desc">Convert office documents to Markdown in Go</span>
-          <span class="go">↗</span>
-        </a>
-        <a class="project-row" href={socials.github} target="_blank" rel="noopener noreferrer">
-          <span class="index">03</span>
-          <span class="name">Everything else</span>
-          <span class="desc">40 public repositories and counting</span>
-          <span class="go">↗</span>
-        </a>
-      </div>
-    </section>
   </div>
 </Base>

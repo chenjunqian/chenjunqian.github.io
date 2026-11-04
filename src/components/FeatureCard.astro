@@ -7,13 +7,21 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { title, description, date, author, cover, coverAlt, tag } = post.data;
+const { title, description, date, author, cover, coverAlt, coverWidth, coverHeight, tag } = post.data;
 ---
 
 <article class="feature">
   <a href={`/writing/${post.id}`} aria-label={title}>
     <div class="feature-media">
-      <img src={cover} alt={coverAlt || ''} loading="eager" />
+      <img
+        src={cover}
+        alt={coverAlt || ''}
+        width={coverWidth}
+        height={coverHeight}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
     </div>
     <div class="feature-body">
       <span class="tag-pill">{tag}</span>

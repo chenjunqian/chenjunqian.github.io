@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.55" stop-color="#f7f7f7"/>
+      <stop offset="1" stop-color="#eeeeee"/>
+    </linearGradient>
+    
+    <radialGradient id="halo" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="1"/><stop offset="0.55" stop-color="#f2f2f2" stop-opacity="0.55"/><stop offset="1" stop-color="#eeeeee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="vignette" cx="50%" cy="46%" r="74%">
+      <stop offset="0.6" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#000000" stop-opacity="0.1"/>
+    </radialGradient>
+    
+  <filter id="grain" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="n"/>
+    <feColorMatrix in="n" type="saturate" values="0"/>
+  </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#paper)"/>
+  <circle cx="900" cy="120" r="760" fill="url(#halo)"/>
+
+  <g>
+    <path d="M300 296 H1140" stroke="rgba(0, 0, 0, 0.14)" stroke-width="1"/>
+    <path d="M300 716 H1340" stroke="rgba(0, 0, 0, 0.14)" stroke-width="1"/>
+  </g>
+
+  <g><rect x="300" y="362" width="128" height="60" rx="16" fill="#ffffff" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.6"/><circle cx="330" cy="392" r="7" fill="#111111"/><rect x="346" y="387" width="62" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><path d="M428 392 h100" stroke="rgba(0, 0, 0, 0.42)" stroke-width="1.6" stroke-dasharray="3 8" stroke-linecap="round"/><rect x="528" y="362" width="128" height="60" rx="16" fill="#ffffff" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.6"/><circle cx="558" cy="392" r="7" fill="#111111"/><rect x="574" y="387" width="62" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><path d="M656 392 h100" stroke="rgba(0, 0, 0, 0.42)" stroke-width="1.6" stroke-dasharray="3 8" stroke-linecap="round"/><rect x="756" y="362" width="128" height="60" rx="16" fill="#ffffff" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.6"/><circle cx="786" cy="392" r="7" fill="#111111"/><rect x="802" y="387" width="62" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><path d="M884 392 h100" stroke="rgba(0, 0, 0, 0.42)" stroke-width="1.6" stroke-dasharray="3 8" stroke-linecap="round"/><rect x="984" y="362" width="128" height="60" rx="16" fill="#ffffff" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.6"/><circle cx="1014" cy="392" r="7" fill="#111111"/><rect x="1030" y="387" width="62" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><path d="M1112 392 h100" stroke="rgba(0, 0, 0, 0.42)" stroke-width="1.6" stroke-dasharray="3 8" stroke-linecap="round"/><rect x="1212" y="362" width="128" height="60" rx="16" fill="#ffffff" stroke="rgba(0, 0, 0, 0.28)" stroke-width="1.6"/><circle cx="1242" cy="392" r="7" fill="#111111"/><rect x="1258" y="387" width="62" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/></g>
+  <g><rect x="300" y="578" width="1040" height="84" rx="24" fill="rgba(0, 0, 0, 0.05)" stroke="rgba(0, 0, 0, 0.26)" stroke-width="1.6"/><circle cx="360" cy="620" r="7" fill="#111111"/><rect x="380" y="615" width="74" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><circle cx="576" cy="620" r="7" fill="#111111"/><rect x="596" y="615" width="74" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><circle cx="792" cy="620" r="7" fill="#111111"/><rect x="812" y="615" width="74" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><circle cx="1008" cy="620" r="7" fill="#111111"/><rect x="1028" y="615" width="74" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/><circle cx="1224" cy="620" r="7" fill="#111111"/><rect x="1244" y="615" width="74" height="10" rx="5" fill="rgba(0, 0, 0, 0.2)"/></g>
+
+  <rect width="1600" height="900" fill="url(#vignette)"/>
+  <rect width="1600" height="900" filter="url(#grain)" opacity="0.05"/>
+</svg>
