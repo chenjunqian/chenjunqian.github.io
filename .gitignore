@@ -25,3 +25,6 @@ pnpm-debug.log*
 # generated during og render
 scripts/.og-tmp.html
 scripts/.og-tmp.png
+
+# local preview captures
+.dsh-preview/
