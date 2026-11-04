@@ -1,0 +1,30 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, date, author, cover, coverAlt, tag } = post.data;
+---
+
+<article class="feature">
+  <a href={`/writing/${post.id}`} aria-label={title}>
+    <div class="feature-media">
+      <img src={cover} alt={coverAlt || ''} loading="eager" />
+    </div>
+    <div class="feature-body">
+      <span class="tag-pill">{tag}</span>
+      <h2>{title}</h2>
+      <div class="meta">
+        <span>{formatDate(date)}</span>
+        <span class="dot"></span>
+        <span>{author}</span>
+      </div>
+      <p class="excerpt">{description}</p>
+      <span class="read-more">Read the piece <span class="arrow">→</span></span>
+    </div>
+  </a>
+</article>

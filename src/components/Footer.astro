@@ -1,0 +1,52 @@
+---
+import { socials, projects } from '../data/projects';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand" href="/">
+          <span class="brand-mark">JQ</span>
+          <span class="brand-word">Junqian</span>
+        </a>
+        <p>Infrastructure engineer and indie builder in Shanghai. Writing about the products I ship and the parts of software nobody puts on a slide.</p>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="/writing">Writing</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href={socials.rss}>RSS feed</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Elsewhere</h3>
+          <ul>
+            <li><a href={socials.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a></li>
+            <li><a href={`mailto:${socials.email}`}>Email</a></li>
+            <li><a href={socials.telegram} target="_blank" rel="noopener noreferrer">Telegram ↗</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Products</h3>
+          <ul>
+            {projects.slice(0, 4).map((project) => (
+              <li><a href={`/projects#${project.slug}`}>{project.name}</a></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>© {year} Junqian Chen. Built with Astro, deployed on GitHub Pages.</span>
+      <span class="sig">Shanghai · UTC+8 · 保持好奇</span>
+    </div>
+  </div>
+</footer>

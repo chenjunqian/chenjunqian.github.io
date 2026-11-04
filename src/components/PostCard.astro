@@ -1,0 +1,28 @@
+---
+import type { Post } from '../lib/posts';
+import { formatDate } from '../lib/posts';
+
+interface Props {
+  post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, date, author, cover, coverAlt } = post.data;
+---
+
+<article class="post-card">
+  <a href={`/writing/${post.id}`} aria-label={title}>
+    <div class="post-card-media">
+      <img src={cover} alt={coverAlt || ''} loading="lazy" />
+    </div>
+    <div class="post-card-body">
+      <h3>{title}</h3>
+      <div class="meta">
+        <span>{author}</span>
+        <span class="dot"></span>
+        <span>{formatDate(date)}</span>
+      </div>
+      <p class="excerpt">{description}</p>
+    </div>
+  </a>
+</article>
