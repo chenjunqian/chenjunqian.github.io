@@ -67,6 +67,7 @@ export const projects: Project[] = [
       'Smooth, camera-like tracking without a gimbal',
       'Zero third-party computer-vision dependencies',
     ],
+    featured: true,
   },
   {
     slug: 'jd-matcher',
@@ -114,7 +115,6 @@ export const projects: Project[] = [
       'English + Chinese summaries written by an LLM',
       'Sunday weekly synthesis, email newsletter, installable PWA',
     ],
-    featured: true,
   }
 ];
 
