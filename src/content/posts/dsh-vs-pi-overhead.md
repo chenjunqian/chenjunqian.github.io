@@ -8,7 +8,6 @@ cover: '/images/covers/dsh-vs-pi.jpg'
 coverAlt: 'Illustration of a heavy blue DeepSeek Harness robot loaded with tools beside a small red pi robot riding a direct bash shell'
 coverWidth: 1200
 coverHeight: 670
-featured: true
 ---
 
 *Source code level analyst. DSH 0.2.1-rc.3 (the running build) and 0.2.2-alpha.3 (the checkout) against pi, why the dsh cost more time and token to complete the same task*
