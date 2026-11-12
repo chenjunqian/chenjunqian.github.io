@@ -120,6 +120,39 @@ To use a different cover, drop an image into `public/images/covers/` and referen
 post frontmatter. To regenerate the JD Matcher icon, edit the inline SVG at the end of
 `scripts/generate-art.mjs`.
 
+## Analytics
+
+Cloudflare Web Analytics: free, cookie-free, no consent banner, and it needs no DNS or proxy
+change — the site stays on GitHub Pages. The beacon is injected once in `src/layouts/Base.astro`,
+so every route (including `/404`) is tracked and new pages inherit it for free.
+
+To turn it on:
+
+1. Cloudflare dashboard → **Analytics & Logs → Web Analytics → Add a site**
+2. Hostname `chenjunqian.github.io`, then choose the **JS snippet** path (the site is not proxied,
+   so automatic setup does not apply)
+3. Copy the `token` value from the snippet
+4. Paste it into `src/data/analytics.ts` and push
+
+Nothing is emitted while the token is empty, and nothing is emitted in `npm run dev`, so local
+work does not pollute the numbers.
+
+What it gives you: page views per path (`/writing/<slug>` rolls up per article), referrers, top
+pages, countries, devices, and Core Web Vitals.
+
+What it does not give you:
+
+- **Query strings are not logged**, so UTM tags are invisible. Traffic from X, Reddit or an HN
+  client that strips `Referer` shows up as "Direct".
+- Unsampled beacons are kept **7 days**; after that data is aggregated to ~10% for **6 months**.
+  Article totals stay meaningful, narrow long-range filters do not.
+- No custom events, so no scroll depth or "read to the end".
+- `cloudflareinsights.com` is on ad-blocker lists, so expect an undercount.
+
+If referrer/UTM attribution ever matters more than the setup cost, the upgrade path is a small
+Worker that writes `path + referrer + utm_* + country` to Workers Analytics Engine — included in
+the Workers Paid plan, 3 months retention, queried with SQL.
+
 ## Deployment
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site and publishes

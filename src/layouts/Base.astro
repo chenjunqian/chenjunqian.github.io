@@ -8,6 +8,7 @@ import Header from '../components/Header.astro';
 import Lightbox from '../components/Lightbox.astro';
 import Footer from '../components/Footer.astro';
 import { socials } from '../data/projects';
+import { webAnalyticsEnabled, webAnalyticsToken } from '../data/analytics';
 
 interface Props {
   title?: string;
@@ -76,6 +77,18 @@ const ogImage = new URL(image, Astro.site);
       })}
     />
     <slot name="head" />
+
+    {/* Cloudflare Web Analytics: one beacon for the whole site, see src/data/analytics.ts */}
+    {
+      webAnalyticsEnabled && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: webAnalyticsToken, spa: false })}
+        />
+      )
+    }
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
