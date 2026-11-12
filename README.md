@@ -35,29 +35,71 @@ npm run preview   # preview the production build
 
 ## Writing a post
 
-Create `src/content/posts/<slug>.md`:
-
-```markdown
----
-title: 'A title that earns the click'
-description: 'One sentence used on cards, in search results and in the RSS feed.'
-date: 2026-11-04
-author: 'Junqian Chen'
-tag: 'Build log'          # free-form: Notes, Build log, Product…
-cover: '/images/covers/hello.svg'
-coverAlt: 'Describe the cover for screen readers'
-featured: false           # true pins it to the home page
-draft: false              # true hides it from production builds
----
-
-Body starts here. Markdown, code blocks and images all work.
+```bash
+cp templates/post.md src/content/posts/<slug>.md   # file name = /writing/<slug>/
+npm run check:posts                                # validate before you build
 ```
 
-- The file name becomes the URL: `/writing/<slug>/`.
-- `date` controls ordering; newest first.
+`templates/post.md` holds the annotated frontmatter. It lives outside `src/content/posts/` so it
+is never built as a post. `npm run build` runs the same check first (via `prebuild`), so a broken
+post fails with a readable message instead of a js-yaml stack trace.
+
+Conventions:
+
+- The file name becomes the URL: `/writing/<slug>/`. Lowercase and hyphens.
+- `date` in `YYYY-MM-DD` form, unquoted. It controls ordering, newest first.
 - `featured: true` puts the post in the large hero card on the home page.
-- Social previews use `<cover>-og.png`; generate it with `npm run art` (or point `cover` at a PNG).
+- Social previews use `<cover>-og.jpg` (`-og.png` for SVG covers); generate it with `npm run art`.
+- Inline images go in `public/images/posts/<slug>/` and are referenced with a `<figure>` block
+  (see the template) so they get a rounded frame and a caption.
 - Delete the three seeded posts once you have your own.
+
+### Strict rules — what actually breaks the build
+
+Frontmatter is YAML, parsed by js-yaml, then validated by the zod schema in
+`src/content.config.ts`. Either step failing kills the whole build, and in `npm run dev` the post
+just 404s until you fix it. All of the following were reproduced against this repo:
+
+**Fails the build (YAML):**
+
+| Write | Not | Why |
+| --- | --- | --- |
+| `title: "DSH vs pi: where the time goes"` | `title: DSH vs pi: where the time goes` | an unquoted `: ` starts a nested mapping |
+| `title: "James's tool"` | `title: 'James's tool'` | the apostrophe closes the quote early |
+| `title: "— dash start"` | `title: - dash start` | a leading `-`, `*`, `&`, `?`, `[`, `{`, `>`, `|`, `%`, `@` means YAML syntax |
+| `title: "unbalanced` | | unterminated quote |
+| one key, once | `title:` twice | duplicate keys are a hard error, not last-wins |
+| spaces | tab indentation | tabs are illegal in YAML indentation |
+
+Rule of thumb: wrap every text value in double quotes. Double quotes tolerate apostrophes and
+colons; single quotes do not tolerate apostrophes.
+
+**Fails the build (schema):**
+
+- `title`, `description`, `date`, `cover` are required — a typo in the key name (`descripton:`)
+  reads as a missing field, and unknown fields are dropped silently.
+- `featured` and `draft` must be bare `true` / `false`. `featured: yes` is the string `"yes"` and
+  is rejected.
+- `coverWidth`, `coverHeight` must be unquoted numbers.
+- `date: 2026-02-30` is not a real day; JavaScript silently rolls it to March 2.
+- An empty file or a missing `---` block fails validation.
+
+**Fails the build (markdown):**
+
+- `![alt](./relative.png)` — Astro resolves markdown images through its image pipeline, so a
+  relative path that does not exist fails with `[ImageNotFound]`. Use `/images/...` absolute
+  paths, or the `<figure>` + `<img>` form from the template.
+
+**Builds fine but renders wrong (the silent ones `check:posts` warns about):**
+
+- an unclosed `<figure>` swallows every following paragraph into the figure;
+- `cover:` pointing at a missing file leaves the card, header and OG image broken;
+- a missing `<cover>-og.jpg` 404s only in social previews;
+- dates like `date: "Nov 4, 2026"` are parsed in the build machine's timezone and can shift a day;
+- unknown frontmatter keys, including a misspelled `featured`.
+
+Raw HTML inside markdown is passed through untouched, so any HTML you write is your own
+responsibility: unbalanced tags, `<script>`, and stray `<` are not repaired by the renderer.
 
 ## Editing projects
 
