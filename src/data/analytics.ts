@@ -14,7 +14,7 @@
 // belongs in git. Nothing is emitted while it is empty, which keeps local
 // builds and preview deploys from sending beacons.
 
-export const webAnalyticsToken = '';
+export const webAnalyticsToken = 'feaae1fa05a349c28212374c860a4740';
 
 /** Cloudflare tokens are 32 hex characters. */
 export const webAnalyticsEnabled = import.meta.env.PROD && /^[a-f0-9]{32}$/.test(webAnalyticsToken);
